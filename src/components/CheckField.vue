@@ -48,6 +48,14 @@ export default {
   text-align: right;
 }
 
+@media only screen and (max-width: 768px) {
+  .label {
+    -webkit-box-flex: 2;
+    -ms-flex-positive: 2;
+    flex-grow: 2;
+  }
+}
+
 .body {
   display: -webkit-box;
   display: -ms-flexbox;

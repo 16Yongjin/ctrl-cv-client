@@ -1,31 +1,32 @@
 <template lang="pug">
 .container
-  h1.title.has-text-centered 이력서 등록하기
   section.section
     b-steps(v-model='activeStep' :has-navigation="showStepNav")
       b-step-item(label='등록방법')
         resume-method(:onResumeInput='onResumeInput' :onWriteSelect='onWriteSelect')
-
       b-step-item(label='입력')
         div(v-if="write")
           resume-input
         div(v-else)
           resume-check
-
       b-step-item(label='플랫폼 선택')
-        platform-card
+        platform-card(:backStep="backStep")
 
       template(v-if="showStepNav" slot='navigation' slot-scope='{previous, next}')
-        .has-text-right(style="display:flex;")
-          b-button(outlined size="is-medium" icon-left='chevron-left' :disabled='previous.disabled' @click.prevent='previous.action') 이전
+        div(style="display:flex;")
+          b-button.is-size-5-desktop(outlined icon-left='chevron-left' :disabled='previous.disabled' @click.prevent='previous.action') 이전
           span(style="flex-grow: 1;")
-          span.subtitle(style="line-height: 2.5rem; padding-right:1.5rem;") 위 정보가 맞나요? 
-          b-button(v-if="activeStep !== 2" outlined size="is-medium" icon-right='chevron-right' :disabled='next.disabled' @click.prevent='next.action')  {{ write ?  '다음' : '네!'}}
+          span.check-text.is-size-5-desktop(v-if="checking") 위 정보가 맞나요? 
+          b-button.is-success.is-size-5-desktop(light icon-right='chevron-right' :disabled='next.disabled' @click.prevent='next.action')  {{ write ?  '다음' : '네!'}}
+
+        .has-text-right.mt-1(v-if="checking")
+          span.check-text.is-size-5-desktop 아니라면,
+          b-button.is-size-5-desktop(@click="onWriteSelect") 수정하기
+
 
   b-loading(:active.sync='isLoading', :can-cancel='false')
     .loading-icon
     h1.title.uploading 이력서를 업로드 중입니다.
-
 </template>
 
 <script>
@@ -44,7 +45,7 @@ export default {
   },
   data() {
     return {
-      activeStep: 1,
+      activeStep: 0,
       dropFiles: [],
       isLoading: false,
       write: false
@@ -52,8 +53,10 @@ export default {
   },
   computed: {
     showStepNav() {
-      console.log(this.activeStep, this.activeStep !== 0);
-      return this.activeStep !== 0;
+      return this.activeStep === 1;
+    },
+    checking() {
+      return !this.write && this.activeStep === 1;
     }
   },
   methods: {
@@ -71,6 +74,9 @@ export default {
         this.isLoading = false;
         this.activeStep = 1;
       }, 1 * 1000);
+    },
+    backStep() {
+      this.activeStep = Math.max(this.activeStep - 1, 0);
     }
   },
   watch: {
@@ -100,6 +106,11 @@ export default {
   transform: translate(-50%, -50%);
   color: #dbdbdb;
 }
+
+.check-text {
+  line-height: 2.5rem;
+  margin-right: 1rem;
+}
 </style>
 
 <style>
@@ -123,7 +134,40 @@ export default {
   padding: 1rem;
 }
 
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.mt-2 {
+  margin-top: 2rem;
+}
+
+.rel {
+  position: relative;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .step-header {
-  margin: 2rem;
+  margin: 2rem 0;
+}
+
+.step-section {
+  padding: 3rem 1.5rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .step-section {
+    padding: 0;
+  }
 }
 </style>

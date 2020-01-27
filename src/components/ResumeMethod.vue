@@ -1,6 +1,6 @@
 <template lang="pug">
 .step-header
-  h1.title.has-text-centered 이력서 등록 방법 선택
+  h1.title.is-4.has-text-centered 이력서 등록 방법 선택
   .columns
     .column.is-3.is-hidden-touch
     .column.is-3
@@ -36,6 +36,7 @@ export default {
 .card.write:hover {
   border-color: #00d1b2;
   background: rgba(0, 209, 178, 0.05);
+  cursor: pointer;
 }
 </style>
 
